@@ -1,6 +1,6 @@
 environment:
   matrix:
-    - BuildType: "msvc-x64"
+#    - BuildType: "msvc-x64"
     - BuildType: "msvc"
 #    - BuildType: "clang-cl"
 #    - BuildType: vssolution
@@ -13,6 +13,7 @@ matrix:
   fast_finish: true
 
 init:
+  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
   - ps: (New-Object System.Net.WebClient).DownloadFile("https://svn.reactos.org/amine/RosCMakeNinja.zip","C:\RosCMakeNinja.zip")
   - 7z x C:\RosCMakeNinja.zip -oC:\RosCMakeNinja
   - ps: >-
@@ -39,6 +40,10 @@ build_script:
       & ninja -k0 2>&1 | select-string -pattern "\[\d+\/\d+\] " -NotMatch | %{$_.Line}
   - ps: >-
       & ninja bootcd 2>&1 | select-string -pattern "\[\d+\/\d+\] " -NotMatch | %{$_.Line}
+  - copy c:\ros_build\bootcd.iso c:\reactos-cov\bootcd.iso
+  - ps: >-
+      & ninja livecd 2>&1 | select-string -pattern "\[\d+\/\d+\] " -NotMatch | %{$_.Line}
+  - copy c:\ros_build\livecd.iso c:\reactos-cov\livecd.iso
 
 test: off
 deploy: off
@@ -57,3 +62,7 @@ for:
     - cd C:\ros_build
     - call %APPVEYOR_BUILD_FOLDER%\configure.cmd VSSolution -DENABLE_ROSTESTS=1
     - msbuild /verbosity:quiet /target:bootcd REACTOS.sln
+artifacts:
+  - path: '**\**\*.iso'
+  - path: '**\*.iso'
+  - path: '*.iso'
