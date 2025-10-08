@@ -590,13 +590,6 @@ extern "C" {
 
 #define INIT_ONCE_STATIC_INIT RTL_RUN_ONCE_INIT
 
-typedef enum _DEP_SYSTEM_POLICY_TYPE {
-    AlwaysOff = 0,
-    AlwaysOn = 1,
-    OptIn = 2,
-    OptOut = 3
-} DEP_SYSTEM_POLICY_TYPE;
-
 #define PROCESS_DEP_ENABLE 0x00000001
 #define PROCESS_DEP_DISABLE_ATL_THUNK_EMULATION 0x00000002
 
