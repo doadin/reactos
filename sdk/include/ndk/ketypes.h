@@ -1010,6 +1010,9 @@ typedef struct _KNODE
     SLIST_HEADER DeadStackList;
     SLIST_HEADER PfnDereferenceSListHead;
     KAFFINITY ProcessorMask;
+#if (NTDDI_VERSION >= NTDDI_WIN8)
+    KAFFINITY IdleCpuSet;
+#endif
     UCHAR Color;
     UCHAR Seed;
     UCHAR NodeNumber;
