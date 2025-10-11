@@ -333,10 +333,10 @@ typedef struct _HHIVE
     ULONG Cluster;
     BOOLEAN Flat;
     BOOLEAN ReadOnly;
-#if (NTDDI_VERSION < NTDDI_VISTA) // NTDDI_LONGHORN
+
     BOOLEAN Log;
     BOOLEAN Alternate;
-#endif
+
     BOOLEAN DirtyFlag;
 #if (NTDDI_VERSION >= NTDDI_VISTA) // NTDDI_LONGHORN
     ULONG HvBinHeadersUse;
