@@ -331,16 +331,31 @@ typedef struct _HHIVE
     ULONG DirtyAlloc;
     ULONG BaseBlockAlloc;
     ULONG Cluster;
+    #if (NTDDI_VERSION <= NTDDI_WIN8)
+        UCHAR Flat;
+        UCHAR ReadOnly;
+    #elif (NTDDI_VERSION == NTDDI_WIN8 || NTDDI_VERSION == NTDDI_WIN81)
+        union {
+            struct {
+                UCHAR Flat:1;
+                UCHAR ReadOnly:1;
+                UCHAR Reserved:6;
+            };
+            UCHAR FlagsByte;
+        };
+    #elif (NTDDI_VERSION >= NTDDI_WIN10)
     union {
         struct {
-            UCHAR Flat : 1;
-            UCHAR ReadOnly : 1;
-            UCHAR Log : 1;
-            UCHAR Alternate : 1;
-            UCHAR Reserved : 4;
+            UCHAR Flat:1;
+            UCHAR ReadOnly:1;
+            UCHAR SystemCacheBacked:1;
+            UCHAR Log:1;
+            UCHAR Alternate:1;
+            UCHAR Reserved:4;
         };
         UCHAR FlagsByte;
     };
+    #endif
     BOOLEAN DirtyFlag;
 #if (NTDDI_VERSION >= NTDDI_VISTA) // NTDDI_LONGHORN
     ULONG HvBinHeadersUse;
