@@ -579,7 +579,8 @@ RAW("#endif"),
 
 #if (NTDDI_VERSION >= NTDDI_WIN8)
 HEADER("KNODE offsets"),
-OFFSET(NdIdleCpuSet, KNODE, IdleCpuSet),
+// Ensure KNODE has IdleCpuSet before enabling this
+// OFFSET(NdIdleCpuSet, KNODE, IdleCpuSet),
 #endif
 
 //HEADER("ETW definitions for interrupt tracing"),
