@@ -1019,6 +1019,12 @@ typedef struct _PP_LOOKASIDE_LIST
 //
 #include <arch/ketypes.h>
 
+#if (NTDDI_VERSION <= NTDDI_VISTASP1) || (NTDDI_VERSION <= NTDDI_WIN7)
+typedef struct _CACHED_KSTACK_LIST {
+    PVOID Dummy[4]; // Adjust size to match expected layout
+} CACHED_KSTACK_LIST;
+#endif
+
 //
 // Kernel Memory Node
 //
@@ -1067,9 +1073,7 @@ typedef struct _KNODE {
     ULONG MmShiftedColor;
     ULONG FreeCount[2];
     struct _SINGLE_LIST_ENTRY* volatile PfnDeferredList;
-    typedef struct _CACHED_KSTACK_LIST {
-        PVOID Dummy[4]; // Adjust size to match expected layout
-    } CACHED_KSTACK_LIST;
+    CACHED_KSTACK_LIST KStackList;
 
 
 #elif (NTDDI_VERSION <= NTDDI_WIN7)
@@ -1089,9 +1093,7 @@ typedef struct _KNODE {
     ULONG Seed;
     ULONG MmShiftedColor;
     volatile ULONG FreeCount[2];
-    typedef struct _CACHED_KSTACK_LIST {
-        PVOID Dummy[4]; // Adjust size to match expected layout
-    } CACHED_KSTACK_LIST;
+    CACHED_KSTACK_LIST KStackList;
     LONG ParkLock;
     ULONG NodePad1;
 
