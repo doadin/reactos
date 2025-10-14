@@ -1022,11 +1022,25 @@ typedef struct _PP_LOOKASIDE_LIST
 //
 // Kernel Memory Node
 //
-typedef struct _KNODE
-{
+typedef struct _KNODE {
+#if (NTDDI_VERSION <= NTDDI_WINXP)
+    ULONG ProcessorMask;
+    ULONG Color;
+    ULONG MmShiftedColor;
+    ULONG FreeCount[2];
     SLIST_HEADER DeadStackList;
     SLIST_HEADER PfnDereferenceSListHead;
-    KAFFINITY ProcessorMask;
+    struct _SINGLE_LIST_ENTRY* PfnDeferredList;
+    UCHAR Seed;
+    struct _flags {
+        UCHAR Removable : 1;
+        UCHAR Fill : 7;
+    } Flags;
+
+#elif (NTDDI_VERSION <= NTDDI_WS03SP2)
+    SLIST_HEADER DeadStackList;
+    SLIST_HEADER PfnDereferenceSListHead;
+    ULONG ProcessorMask;
     UCHAR Color;
     UCHAR Seed;
     UCHAR NodeNumber;
@@ -1035,9 +1049,107 @@ typedef struct _KNODE
         UCHAR Fill : 7;
     } Flags;
     ULONG MmShiftedColor;
-    ULONG_PTR FreeCount[2];
-    struct _SINGLE_LIST_ENTRY *PfnDeferredList;
+    ULONG FreeCount[2];
+    struct _SINGLE_LIST_ENTRY* PfnDeferredList;
+
+#elif (NTDDI_VERSION <= NTDDI_VISTASP1)
+    SLIST_HEADER PagedPoolSListHead;
+    SLIST_HEADER NonPagedPoolSListHead[3];
+    SLIST_HEADER PfnDereferenceSListHead;
+    ULONG ProcessorMask;
+    UCHAR Color;
+    UCHAR Seed;
+    UCHAR NodeNumber;
+    struct _flags {
+        UCHAR Removable : 1;
+        UCHAR Fill : 7;
+    } Flags;
+    ULONG MmShiftedColor;
+    ULONG FreeCount[2];
+    struct _SINGLE_LIST_ENTRY* volatile PfnDeferredList;
+    typedef struct _CACHED_KSTACK_LIST {
+        PVOID Dummy[4]; // Adjust size to match expected layout
+    } CACHED_KSTACK_LIST;
+
+
+#elif (NTDDI_VERSION <= NTDDI_WIN7)
+    SLIST_HEADER PagedPoolSListHead;
+    SLIST_HEADER NonPagedPoolSListHead[3];
+    GROUP_AFFINITY Affinity;
+    ULONG ProximityId;
+    USHORT NodeNumber;
+    USHORT PrimaryNodeNumber;
+    UCHAR MaximumProcessors;
+    UCHAR Color;
+    struct _flags {
+        UCHAR Removable : 1;
+        UCHAR Fill : 7;
+    } Flags;
+    UCHAR NodePad0;
+    ULONG Seed;
+    ULONG MmShiftedColor;
+    volatile ULONG FreeCount[2];
+    typedef struct _CACHED_KSTACK_LIST {
+        PVOID Dummy[4]; // Adjust size to match expected layout
+    } CACHED_KSTACK_LIST;
+    LONG ParkLock;
+    ULONG NodePad1;
+
+#elif (NTDDI_VERSION <= NTDDI_WINBLUE) // Windows 8.1
+    ULONG DeepIdleSet;
+    ULONG ProximityId;
+    USHORT NodeNumber;
+    USHORT PrimaryNodeNumber;
+    UCHAR MaximumProcessors;
+    struct _flags {
+        UCHAR Removable : 1;
+        UCHAR Fill : 7;
+    } Flags;
+    UCHAR Stride;
+    UCHAR NodePad0;
+    GROUP_AFFINITY Affinity;
+    ULONG IdleCpuSet;
+    ULONG IdleSmtSet;
+    ULONG Seed;
+    ULONG Lowest;
+    ULONG Highest;
+    LONG ParkLock;
+    ULONG NonParkedSet;
+
+#elif (NTDDI_VERSION <= NTDDI_WIN10_TH1)
+    ULONG IdleNonParkedCpuSet;
+    ULONG IdleSmtSet;
+    ULONG IdleCpuSet;
+    ULONG DeepIdleSet;
+    ULONG IdleConstrainedSet;
+    ULONG NonParkedSet;
+    LONG ParkLock;
+    ULONG Seed;
+    ULONG SiblingMask;
+    union {
+        GROUP_AFFINITY Affinity;
+        struct {
+            UCHAR AffinityFill[6];
+            USHORT NodeNumber;
+            USHORT PrimaryNodeNumber;
+            UCHAR Stride;
+            UCHAR Spare0;
+        };
+    };
+    ULONG SharedReadyQueueLeaders;
+    ULONG ProximityId;
+    ULONG Lowest;
+    ULONG Highest;
+    UCHAR MaximumProcessors;
+    struct _flags {
+        UCHAR Removable : 1;
+        UCHAR Fill : 7;
+    } Flags;
+    UCHAR Spare10;
+    struct _KHETERO_PROCESSOR_SET HeteroSets[5];
+#endif
 } KNODE, *PKNODE;
+
 
 //
 // Structure for Get/SetContext APC
