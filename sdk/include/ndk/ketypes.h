@@ -164,6 +164,23 @@ typedef struct _FIBER                                    /* Field offsets:    */
 #endif
 } FIBER, *PFIBER;
 
+#if (NTDDI_VERSION >= NTDDI_WIN8)
+
+typedef struct _KSTACK_CONTROL {
+    ULONG StackBase;
+
+    union {
+        ULONG ActualLimit;
+        ULONG StackExpansion : 1;
+    };
+
+    struct _KTRAP_FRAME* PreviousTrapFrame;
+    VOID* PreviousExceptionList;
+    struct _KERNEL_STACK_SEGMENT Previous;
+} KSTACK_CONTROL, *PKSTACK_CONTROL;
+
+#endif // NTDDI_VERSION >= NTDDI_WIN8
+
 #ifndef NTOS_MODE_USER
 //
 // Number of dispatch codes supported by KINTERRUPT
