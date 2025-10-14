@@ -278,7 +278,7 @@ ProIndicatePacket(
     {
       BufferedLength = CopyPacketToBuffer(LookaheadBuffer, Packet, 0, PacketLength);
       #if (NTDDI_VERSION >= NTDDI_WIN7)
-        Adapter->NdisMiniportBlock.IndicatedPacket[KeGetCurrentProcessorNumberEx()] = Packet;
+        Adapter->NdisMiniportBlock.IndicatedPacket[KeGetCurrentProcessorNumberEx(NULL)] = Packet;
       #else
         Adapter->NdisMiniportBlock.IndicatedPacket[KeGetCurrentProcessorNumber()] = Packet;
       #endif
@@ -302,7 +302,7 @@ ProIndicatePacket(
   KeAcquireSpinLock(&Adapter->NdisMiniportBlock.Lock, &OldIrql);
     {
       #if (NTDDI_VERSION >= NTDDI_WIN7)
-        Adapter->NdisMiniportBlock.IndicatedPacket[KeGetCurrentProcessorNumberEx()] = NULL;
+        Adapter->NdisMiniportBlock.IndicatedPacket[KeGetCurrentProcessorNumberEx(NULL)] = NULL;
       #else
         Adapter->NdisMiniportBlock.IndicatedPacket[KeGetCurrentProcessorNumber()] = NULL;
       #endif
