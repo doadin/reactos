@@ -331,12 +331,16 @@ typedef struct _HHIVE
     ULONG DirtyAlloc;
     ULONG BaseBlockAlloc;
     ULONG Cluster;
-    BOOLEAN Flat;
-    BOOLEAN ReadOnly;
-
-    BOOLEAN Log;
-    BOOLEAN Alternate;
-
+    union {
+        struct {
+            UCHAR Flat : 1;
+            UCHAR ReadOnly : 1;
+            UCHAR Log : 1;
+            UCHAR Alternate : 1;
+            UCHAR Reserved : 4;
+        };
+        UCHAR FlagsByte;
+    };
     BOOLEAN DirtyFlag;
 #if (NTDDI_VERSION >= NTDDI_VISTA) // NTDDI_LONGHORN
     ULONG HvBinHeadersUse;
