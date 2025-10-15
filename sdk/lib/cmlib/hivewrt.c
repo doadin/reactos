@@ -82,6 +82,7 @@ HvpValidateBaseHeader(
 static
 BOOLEAN
 CMAPI
+__attribute__((unused))
 HvpWriteLog(
     _In_ PHHIVE RegistryHive)
 {
