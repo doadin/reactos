@@ -1093,7 +1093,7 @@ HvLoadHive(
 #else
         {
             /* Check if this hive has a log at hand to begin with */
-            #if (NTDDI_VERSION < NTDDI_VISTA)
+            #if (NTDDI_VERSION > NTDDI_VISTA)
             if (!Hive->Log)
             {
                 DPRINT1("The hive has no log for header recovery\n");
@@ -1387,7 +1387,7 @@ HvInitialize(
     Hive->BaseBlockAlloc = sizeof(HBASE_BLOCK); // == HBLOCK_SIZE
 
     Hive->Version = HSYS_MINOR;
-#if (NTDDI_VERSION < NTDDI_VISTA)
+#if (NTDDI_VERSION > NTDDI_VISTA)
     Hive->Log = (FileType == HFILE_TYPE_LOG);
     Hive->Alternate = (FileType == HFILE_TYPE_ALTERNATE);
 #endif
