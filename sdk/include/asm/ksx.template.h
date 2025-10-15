@@ -860,7 +860,9 @@ OFFSET(UsLargePageMinimum, KUSER_SHARED_DATA, LargePageMinimum),
 //#if (NTDDI_VERSION >= NTDDI_WIN10)
 //OFFSET(UsNtBuildNumber, KUSER_SHARED_DATA, NtBuildNumber),
 //#else
+#if (NTDDI_VERSION <= NTDDI_WIN10)
 OFFSET(UsReserved2, KUSER_SHARED_DATA, Reserved2),
+#endif
 //#endif
 OFFSET(UsNtProductType, KUSER_SHARED_DATA, NtProductType),
 OFFSET(UsProductTypeIsValid, KUSER_SHARED_DATA, ProductTypeIsValid),
@@ -881,12 +883,16 @@ OFFSET(UsLastSystemRITEventTickCount, KUSER_SHARED_DATA, LastSystemRITEventTickC
 OFFSET(UsNumberOfPhysicalPages, KUSER_SHARED_DATA, NumberOfPhysicalPages),
 OFFSET(UsSafeBootMode, KUSER_SHARED_DATA, SafeBootMode),
 OFFSET(UsTestRetInstruction, KUSER_SHARED_DATA, TestRetInstruction),
+#if (NTDDI_VERSION <= NTDDI_WIN10)
 OFFSET(UsSystemCall, KUSER_SHARED_DATA, SystemCall), // not in win10
 OFFSET(UsSystemCallReturn, KUSER_SHARED_DATA, SystemCallReturn), // not in win10
+#endif
 OFFSET(UsSystemCallPad, KUSER_SHARED_DATA, SystemCallPad),
 OFFSET(UsTickCount, KUSER_SHARED_DATA, TickCount),
 OFFSET(UsTickCountQuad, KUSER_SHARED_DATA, TickCountQuad),
+#if (NTDDI_VERSION <= NTDDI_WIN10)
 OFFSET(UsWow64SharedInformation, KUSER_SHARED_DATA, Wow64SharedInformation), // not in win10
+#endif
 //OFFSET(UsXState, KUSER_SHARED_DATA, XState), // win 10
 
 HEADER("KWAIT_BLOCK offsets"),
