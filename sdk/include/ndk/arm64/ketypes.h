@@ -159,10 +159,126 @@ typedef struct _TRAPFRAME_LOG_ENTRY
 // Processor Region Control Block
 // Based on WoA
 //
-typedef struct _KPRCB
-{
-    ULONG dummy;
+typedef struct _KPRCB {
+    // Common fields (XP baseline)
+    USHORT MinorVersion;                  // 0x000
+    USHORT MajorVersion;                  // 0x002
+    struct _KTHREAD* CurrentThread;       // x86: 0x004 / x64: 0x008
+    struct _KTHREAD* NextThread;          // x86: 0x008 / x64: 0x010
+    struct _KTHREAD* IdleThread;          // x86: 0x00C / x64: 0x018
+    UCHAR Number;                         // x86: 0x010 / x64: 0x020
+    UCHAR Reserved0;                      // x86: 0x011 / x64: 0x021
+    USHORT BuildType;                     // x86: 0x012 / x64: 0x022
+    ULONG SetMember;                      // x86: 0x014 / x64: 0x024
+
+#if defined(_WIN64)
+    UCHAR Group;                          // 0x028
+    UCHAR GroupIndex;                     // 0x029
+    USHORT GroupSetMember;                // 0x02A
+    ULONG64 PrcbLock;                     // 0x030
+#if (NTDDI_VERSION >= NTDDI_WIN10)
+    VOID* PriorityState;
+#endif
+    ULONG64 PrcbPad00[3];                 // 0x038
+#else
+    CHAR CpuType;                         // 0x018
+    CHAR CpuID;                           // 0x019
+    USHORT CpuStep;                       // 0x01A
+    ULONG MHz;                            // 0x01C
+    ULONG HalReserved[8];                 // 0x020
+    UCHAR PrcbPad00[0x20];                // 0x040
+#endif
+
+    struct _KSPIN_LOCK_QUEUE LockQueue[17]; // x86: 0x060 / x64: 0x050
+    struct _PROCESSOR_STATE ProcessorState; // x86: 0x130 / x64: 0x150
+
+#if defined(_WIN64)
+    ULONG64 KernelReserved[16];           // 0x3F0
+    ULONG64 HalReserved[16];              // 0x470
+    ULONG64 PrcbPad01[16];                // 0x4F0
+#else
+    ULONG KernelReserved[14];             // 0x1B0
+    ULONG HalReserved2[16];               // 0x1E8
+    struct _KPRCB* MultiThreadProcessorSet; // 0x228
+    struct _KPRCB* MultiThreadSetMaster;    // 0x22C
+    ULONG SecondaryColorMask;             // 0x230
+    ULONG DpcTime;                        // 0x234
+    ULONG DpcTimeCount;                   // 0x238
+    ULONG DpcTimeLimit;                   // 0x23C
+    ULONG PrcbPad10[0x10];                // 0x240
+#endif
+
+    struct _KDPC_DATA DpcData[2];         // x86: 0x280 / x64: 0x570
+    VOID* DpcStack;                       // x86: 0x2A0 / x64: 0x5B0
+
+#if defined(_WIN64)
+    LONG MaximumDpcQueueDepth;            // 0x5B8
+    ULONG DpcRequestRate;                 // 0x5BC
+    ULONG MinimumDpcRate;                 // 0x5C0
+    ULONG DpcLastCount;                   // 0x5C4
+    ULONG64 TimerHand;                    // 0x5C8
+    ULONG64 TimerRequest;                 // 0x5D0
+    ULONG64 TickOffset;                   // 0x5D8
+    ULONG64 MasterOffset;                 // 0x5E0
+    ULONG64 InterruptCount;               // 0x5E8
+    ULONG64 KernelTime;                   // 0x5F0
+    ULONG64 UserTime;                     // 0x5F8
+    ULONG64 DpcTime;                      // 0x600
+    ULONG64 InterruptTime;                // 0x608
+    ULONG64 AdjustDpcThreshold;           // 0x610
+    ULONG64 PageColor;                    // 0x618
+    ULONG64 DebugDpcTime;                 // 0x620
+    ULONG64 PrcbPad20[16];                // 0x628
+#else
+    ULONG MaximumDpcQueueDepth;           // 0x2A4
+    ULONG DpcRequestRate;                 // 0x2A8
+    ULONG MinimumDpcRate;                 // 0x2AC
+    ULONG DpcLastCount;                   // 0x2B0
+    ULONG PrcbLock;                       // 0x2B4
+#if (NTDDI_VERSION >= NTDDI_WIN10)
+    VOID* PriorityState;
+#endif
+    ULONG DpcInterruptRequested;          // 0x2B8
+    ULONG DpcThreadRequested;             // 0x2BC
+    ULONG DpcRoutineActive;               // 0x2C0
+    ULONG DpcThreadActive;                // 0x2C4
+    ULONG TimerHand;                      // 0x2C8
+    ULONG TimerRequest;                   // 0x2CC
+    ULONG TickOffset;                     // 0x2D0
+    ULONG MasterOffset;                   // 0x2D4
+    ULONG InterruptCount;                 // 0x318
+    ULONG KernelTime;                     // 0x31C
+    ULONG UserTime;                       // 0x320
+    ULONG DpcTime2;                       // 0x324
+    ULONG InterruptTime;                  // 0x328
+    ULONG AdjustDpcThreshold;             // 0x32C
+    ULONG PageColor;                      // 0x330
+    ULONG DebugDpcTime;                   // 0x334
+    ULONG PrcbPad30[0x10];                // 0x338
+#endif
+
+#if (NTDDI_VERSION >= NTDDI_WIN10)
+    VOID* SchedulerAssist;
+    VOID* HypervisorData;
+    VOID* VsmData;
+#endif
+
+#if defined(_WIN64)
+    VOID* IumData;
+    BOOLEAN IumEnabled;
+    UCHAR PrcbPad30[7];
+    KAFFINITY CoreProcessorSet;
+    KAFFINITY PackageProcessorSet;
+    KAFFINITY GroupAffinityMask;
+    ULONG64 PrcbPad40[16];
+#endif
+
+#if (NTDDI_VERSION >= NTDDI_WIN10)
+    VOID* Reserved[64]; // Future-proofing
+#endif
+
 } KPRCB, *PKPRCB;
+
 
 //
 // Processor Control Region
