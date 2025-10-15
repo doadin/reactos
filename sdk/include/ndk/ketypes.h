@@ -1033,6 +1033,15 @@ typedef struct _CACHED_KSTACK_LIST {
 } CACHED_KSTACK_LIST;
 #endif
 
+#if (NTDDI_VERSION <= NTDDI_WIN10)
+struct _KHETERO_PROCESSOR_SET
+{
+    ULONG IdealMask;                                                        //0x0
+    ULONG PreferredMask;                                                    //0x4
+    ULONG AvailableMask;                                                    //0x8
+}; 
+#endif
+
 //
 // Kernel Memory Node
 //
