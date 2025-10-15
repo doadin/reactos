@@ -41,10 +41,18 @@
 #include <sys/poll.h>
 #else
 /* kludge it up */
+#ifndef pollfd
 struct pollfd { int fd; short events; short revents; };
+#endif
+#ifndef POLLIN
 #define POLLIN  1
+#endif
+#ifndef POLLPRI
 #define POLLPRI 2
+#endif
+#ifndef POLLOUT
 #define POLLOUT 4
+#endif
 #endif
 
 /* GNU C attributes. */
