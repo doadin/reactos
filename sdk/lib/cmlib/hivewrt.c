@@ -79,10 +79,12 @@ HvpValidateBaseHeader(
  * it lacks the implementation for growing the log file size.
  * See the FIXME comment below for further details.
  */
+#if defined(__GNUC__)
+__attribute__((unused))
+#endif
 static
 BOOLEAN
 CMAPI
-__attribute__((unused))
 HvpWriteLog(
     _In_ PHHIVE RegistryHive)
 {
@@ -481,13 +483,7 @@ HvSyncHive(
         return TRUE;
     }
 
-    /*
-     * Check if there's any dirty data in the vector.
-     * A space with clean blocks would be pointless for
-     * a log because we want to write dirty data in and
-     * sync up, not clean data. So just consider our
-     * job as done as there's literally nothing to do.
-     */
+    /* Skip if no dirty data */
     if (RtlFindSetBits(&RegistryHive->DirtyVector, 1, 0) == ~HV_CLEAN_BLOCK)
     {
         DPRINT("The dirty vector has clean data, nothing to do\n");
@@ -495,18 +491,16 @@ HvSyncHive(
     }
 
 #if !defined(CMLIB_HOST) && !defined(_BLDR_)
-    /* Disable hard errors before syncing the hive */
     HardErrors = IoSetThreadHardErrorMode(FALSE);
 #endif
 
 #if !defined(_BLDR_)
-    /* Update hive header modification time */
     KeQuerySystemTime(&RegistryHive->BaseBlock->TimeStamp);
 #endif
 
-    /* Update the hive log file if present */
-    #if (NTDDI_VERSION > NTDDI_VISTA)
-    if (RegistryHive->Log)
+#if (NTDDI_VERSION > NTDDI_VISTA)
+    /* Write log if log data is present */
+    if (RegistryHive->LogDataPresent[0] || RegistryHive->LogDataPresent[1])
     {
         if (!HvpWriteLog(RegistryHive))
         {
@@ -517,9 +511,9 @@ HvSyncHive(
             return FALSE;
         }
     }
-    #endif
+#endif
 
-    /* Update the primary hive file */
+    /* Write primary hive */
     if (!HvpWriteHive(RegistryHive, TRUE, HFILE_TYPE_PRIMARY))
     {
         DPRINT1("Failed to write the primary hive\n");
@@ -529,9 +523,9 @@ HvSyncHive(
         return FALSE;
     }
 
-    /* Update the alternate hive file if present */
-    #if (NTDDI_VERSION > NTDDI_VISTA)
-    if (RegistryHive->Alternate)
+#if (NTDDI_VERSION > NTDDI_VISTA)
+    /* Write alternate hive if log type indicates it */
+    if (RegistryHive->CurrentLog == HFILE_TYPE_ALTERNATE)
     {
         if (!HvpWriteHive(RegistryHive, TRUE, HFILE_TYPE_ALTERNATE))
         {
@@ -542,17 +536,18 @@ HvSyncHive(
             return FALSE;
         }
     }
-    #endif
+#endif
 
-    /* Clear dirty bitmap. */
     RtlClearAllBits(&RegistryHive->DirtyVector);
     RegistryHive->DirtyCount = 0;
 
 #if !defined(CMLIB_HOST) && !defined(_BLDR_)
     IoSetThreadHardErrorMode(HardErrors);
 #endif
+
     return TRUE;
 }
+
 
 /**
  * @unimplemented
@@ -641,9 +636,10 @@ HvWriteAlternateHive(
 {
     ASSERT(!RegistryHive->ReadOnly);
     ASSERT(RegistryHive->Signature == HV_HHIVE_SIGNATURE);
-    #if (NTDDI_VERSION > NTDDI_VISTA)
-    ASSERT(RegistryHive->Alternate);
-    #endif
+
+#if (NTDDI_VERSION > NTDDI_VISTA)
+    ASSERT(RegistryHive->CurrentLog == HFILE_TYPE_ALTERNATE);
+#endif
 
 #if !defined(_BLDR_)
     /* Update hive header modification time */
