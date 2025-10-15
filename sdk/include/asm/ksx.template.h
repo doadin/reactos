@@ -535,7 +535,7 @@ OFFSET(KcTrapFrame, KSTACK_CONTROL, PreviousTrapFrame),
 OFFSET(KcExceptionList, KSTACK_CONTROL, PreviousExceptionList),
 #endif // _IX86
 SIZE(KSTACK_CONTROL_LENGTH, KSTACK_CONTROL),
-CONSTANT(KSTACK_ACTUAL_LIMIT_EXPANDED), // move somewhere else?
+//CONSTANT(KSTACK_ACTUAL_LIMIT_EXPANDED), // move somewhere else?
 #else
 //HEADER("KERNEL_STACK_CONTROL"), // obsolete
 #endif
@@ -767,7 +767,9 @@ OFFSET(ThSystemCallNumber, KTHREAD, SystemCallNumber),
 OFFSET(ThTrapFrame, KTHREAD, TrapFrame),
 OFFSET(ThApcState, KTHREAD, ApcState),
 OFFSET(ThPriority, KTHREAD, Priority), // obsolete
+#if (NTDDI_VERSION <= NTDDI_WIN8)
 OFFSET(ThSwapBusy, KTHREAD, SwapBusy),
+#endif /* (NTDDI_VERSION <= NTDDI_WIN8) */
 OFFSET(ThContextSwitches, KTHREAD, ContextSwitches),
 OFFSET(ThState, KTHREAD, State),
 OFFSET(ThProcess, KTHREAD, Process), // thProcess in native headers
@@ -793,7 +795,9 @@ OFFSET(ThAdjustIncrement, KTHREAD, AdjustIncrement),
 OFFSET(ThAffinity, KTHREAD, Affinity), // obsolete
 OFFSET(ThApcStateIndex, KTHREAD, ApcStateIndex),
 OFFSET(ThIdealProcessor, KTHREAD, IdealProcessor), // obsolete
+#if (NTDDI_VERSION <= NTDDI_WIN8)
 OFFSET(ThApcStatePointer, KTHREAD, ApcStatePointer), // obsolete
+#endif /* (NTDDI_VERSION <= NTDDI_WIN8) */
 OFFSET(ThSavedApcState, KTHREAD, SavedApcState), // obsolete
 OFFSET(ThWaitReason, KTHREAD, WaitReason),
 OFFSET(ThSaturation, KTHREAD, Saturation), // obsolete
@@ -860,7 +864,7 @@ OFFSET(UsLargePageMinimum, KUSER_SHARED_DATA, LargePageMinimum),
 //#if (NTDDI_VERSION >= NTDDI_WIN10)
 //OFFSET(UsNtBuildNumber, KUSER_SHARED_DATA, NtBuildNumber),
 //#else
-#if (NTDDI_VERSION <= NTDDI_WIN10)
+#if (NTDDI_VERSION <= NTDDI_WIN8)
 OFFSET(UsReserved2, KUSER_SHARED_DATA, Reserved2),
 #endif
 //#endif
@@ -883,14 +887,14 @@ OFFSET(UsLastSystemRITEventTickCount, KUSER_SHARED_DATA, LastSystemRITEventTickC
 OFFSET(UsNumberOfPhysicalPages, KUSER_SHARED_DATA, NumberOfPhysicalPages),
 OFFSET(UsSafeBootMode, KUSER_SHARED_DATA, SafeBootMode),
 OFFSET(UsTestRetInstruction, KUSER_SHARED_DATA, TestRetInstruction),
-#if (NTDDI_VERSION <= NTDDI_WIN10)
+#if (NTDDI_VERSION <= NTDDI_WIN8)
 OFFSET(UsSystemCall, KUSER_SHARED_DATA, SystemCall), // not in win10
 OFFSET(UsSystemCallReturn, KUSER_SHARED_DATA, SystemCallReturn), // not in win10
 #endif
 OFFSET(UsSystemCallPad, KUSER_SHARED_DATA, SystemCallPad),
 OFFSET(UsTickCount, KUSER_SHARED_DATA, TickCount),
 OFFSET(UsTickCountQuad, KUSER_SHARED_DATA, TickCountQuad),
-#if (NTDDI_VERSION <= NTDDI_WIN10)
+#if (NTDDI_VERSION <= NTDDI_WIN8)
 OFFSET(UsWow64SharedInformation, KUSER_SHARED_DATA, Wow64SharedInformation), // not in win10
 #endif
 //OFFSET(UsXState, KUSER_SHARED_DATA, XState), // win 10
@@ -899,7 +903,9 @@ HEADER("KWAIT_BLOCK offsets"),
 OFFSET(WbWaitListEntry, KWAIT_BLOCK, WaitListEntry),
 OFFSET(WbThread, KWAIT_BLOCK, Thread),
 OFFSET(WbObject, KWAIT_BLOCK, Object),
+#if (NTDDI_VERSION <= NTDDI_WIN8)
 OFFSET(WbNextWaitBlock, KWAIT_BLOCK, NextWaitBlock), // not in win10
+#endif
 OFFSET(WbWaitKey, KWAIT_BLOCK, WaitKey),
 OFFSET(WbWaitType, KWAIT_BLOCK, WaitType),
 
