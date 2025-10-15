@@ -1126,7 +1126,7 @@ typedef struct _KNODE {
     LONG ParkLock;
     ULONG NonParkedSet;
 
-#elif (NTDDI_VERSION <= NTDDI_WIN10_TH1)
+#elif (NTDDI_VERSION <= NTDDI_WIN10)
     ULONG IdleNonParkedCpuSet;
     ULONG IdleSmtSet;
     ULONG IdleCpuSet;
