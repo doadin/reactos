@@ -176,7 +176,7 @@ typedef struct _KPRCB {
     UCHAR GroupIndex;                     // 0x029
     USHORT GroupSetMember;                // 0x02A
     ULONG64 PrcbLock;                     // 0x030
-#if (NTDDI_VERSION >= NTDDI_WIN8)
+#if (NTDDI_VERSION >= NTDDI_WIN11_ZN)
     VOID* PriorityState;
 #endif
     ULONG64 PrcbPad00[3];                 // 0x038
@@ -235,7 +235,7 @@ typedef struct _KPRCB {
     ULONG MinimumDpcRate;                 // 0x2AC
     ULONG DpcLastCount;                   // 0x2B0
     ULONG PrcbLock;                       // 0x2B4
-#if (NTDDI_VERSION >= NTDDI_WIN8)
+#if (NTDDI_VERSION >= NTDDI_WIN11_ZN)
     VOID* PriorityState;
 #endif
     ULONG DpcInterruptRequested;          // 0x2B8
