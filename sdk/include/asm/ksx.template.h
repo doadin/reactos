@@ -767,9 +767,9 @@ OFFSET(ThSystemCallNumber, KTHREAD, SystemCallNumber),
 OFFSET(ThTrapFrame, KTHREAD, TrapFrame),
 OFFSET(ThApcState, KTHREAD, ApcState),
 OFFSET(ThPriority, KTHREAD, Priority), // obsolete
-#if (NTDDI_VERSION <= NTDDI_WIN8)
+#if (NTDDI_VERSION >= NTDDI_WIN7 && NTDDI_VERSION <= NTDDI_WIN8)
 OFFSET(ThSwapBusy, KTHREAD, SwapBusy),
-#endif /* (NTDDI_VERSION <= NTDDI_WIN8) */
+#endif /* (NTDDI_VERSION >= NTDDI_WIN7 && NTDDI_VERSION <= NTDDI_WIN8) */
 OFFSET(ThContextSwitches, KTHREAD, ContextSwitches),
 OFFSET(ThState, KTHREAD, State),
 OFFSET(ThProcess, KTHREAD, Process), // thProcess in native headers
@@ -894,7 +894,7 @@ OFFSET(UsSystemCallReturn, KUSER_SHARED_DATA, SystemCallReturn), // not in win10
 OFFSET(UsSystemCallPad, KUSER_SHARED_DATA, SystemCallPad),
 OFFSET(UsTickCount, KUSER_SHARED_DATA, TickCount),
 OFFSET(UsTickCountQuad, KUSER_SHARED_DATA, TickCountQuad),
-#if (NTDDI_VERSION <= NTDDI_WIN8)
+#if (NTDDI_VERSION >= NTDDI_WINXP && NTDDI_VERSION <= NTDDI_WIN8)
 OFFSET(UsWow64SharedInformation, KUSER_SHARED_DATA, Wow64SharedInformation), // not in win10
 #endif
 //OFFSET(UsXState, KUSER_SHARED_DATA, XState), // win 10
