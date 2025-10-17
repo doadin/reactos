@@ -467,9 +467,9 @@ OFFSET(PbIdleThread, KPRCB, IdleThread),
 OFFSET(PbNestingLevel, KPRCB, NestingLevel),
 OFFSET(PbRspBase, KPRCB, RspBase),
 OFFSET(PbPrcbLock, KPRCB, PrcbLock),
-#if (NTDDI_VERSION >= NTDDI_VISTA)
+#if (NTDDI_VERSION >= NTDDI_WIN10)
 OFFSET(PbPriorityState, KPRCB, PriorityState),
-#endif /* (NTDDI_VERSION >= NTDDI_VISTA) */
+#endif /* (NTDDI_VERSION >= NTDDI_WIN10) */
 OFFSET(PbSetMember, KPRCB, SetMember), // not Win 10
 OFFSET(PbProcessorState, KPRCB, ProcessorState),
 OFFSET(PbCpuType, KPRCB, CpuType),
