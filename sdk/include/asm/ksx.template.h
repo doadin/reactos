@@ -887,16 +887,16 @@ OFFSET(UsLastSystemRITEventTickCount, KUSER_SHARED_DATA, LastSystemRITEventTickC
 OFFSET(UsNumberOfPhysicalPages, KUSER_SHARED_DATA, NumberOfPhysicalPages),
 OFFSET(UsSafeBootMode, KUSER_SHARED_DATA, SafeBootMode),
 OFFSET(UsTestRetInstruction, KUSER_SHARED_DATA, TestRetInstruction),
-#if (NTDDI_VERSION >= NTDDI_WINXP && NTDDI_VERSION <= NTDDI_WINBLUE)
+#if (NTDDI_VERSION <= NTDDI_WIN8)
 OFFSET(UsSystemCall, KUSER_SHARED_DATA, SystemCall), // not in win10
 OFFSET(UsSystemCallReturn, KUSER_SHARED_DATA, SystemCallReturn), // not in win10
-#endif /* NTDDI_WINXP through NTDDI_WINBLUE */
+#endif
 OFFSET(UsSystemCallPad, KUSER_SHARED_DATA, SystemCallPad),
 OFFSET(UsTickCount, KUSER_SHARED_DATA, TickCount),
 OFFSET(UsTickCountQuad, KUSER_SHARED_DATA, TickCountQuad),
-#if (NTDDI_VERSION >= NTDDI_WINXP && NTDDI_VERSION <= NTDDI_WINBLUE)
+#if (NTDDI_VERSION >= NTDDI_WINXP && NTDDI_VERSION <= NTDDI_WIN8)
 OFFSET(UsWow64SharedInformation, KUSER_SHARED_DATA, Wow64SharedInformation), // not in win10
-#endif /* NTDDI_WINXP through NTDDI_WINBLUE */
+#endif
 //OFFSET(UsXState, KUSER_SHARED_DATA, XState), // win 10
 
 HEADER("KWAIT_BLOCK offsets"),
