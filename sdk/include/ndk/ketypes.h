@@ -709,8 +709,7 @@ typedef struct _KUSER_SHARED_DATA
         } DUMMYSTRUCTNAME;
     } DUMMYUNIONNAME3;
     ULONG Cookie;                                           // 0x330
-
-#if (NTDDI_VERSION < NTDDI_VISTA)
+#if (NTDDI_VERSION <= NTDDI_WINBLUE)
     ULONG Wow64SharedInformation[MAX_WOW64_SHARED_ENTRIES]; // 0x334
 #endif
 
@@ -750,10 +749,6 @@ typedef struct _KUSER_SHARED_DATA
     UCHAR Reserved8[14];                                    // 0x372
 #endif
 #endif // NTDDI_VERSION < NTDDI_WIN10
-#elif (NTDDI_VERSION >= NTDDI_VISTASP2)
-    ULONG DEPRECATED_Wow64SharedInformation[MAX_WOW64_SHARED_ENTRIES]; // 0x340
-#else
-    ULONG Wow64SharedInformation[MAX_WOW64_SHARED_ENTRIES]; // 0x340
 #endif // NTDDI_VERSION >= NTDDI_VISTA
 
 #if (NTDDI_VERSION >= NTDDI_WIN7)
