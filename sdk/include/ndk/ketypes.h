@@ -1926,6 +1926,7 @@ typedef struct _KTHREAD
 
     volatile INT_PTR WaitStatus;
     PKWAIT_BLOCK WaitBlockList;
+    volatile UCHAR SwapBusy;
     union
     {
         LIST_ENTRY WaitListEntry;
